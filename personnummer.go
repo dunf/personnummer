@@ -48,15 +48,6 @@ func formatIsValid(pnum string) bool {
 	return true
 }
 
-func pnumIsValid(pnum *[11]int32) bool {
-	for i := 0; i < 11; i++ {
-		if pnum[i] == -1 {
-			return false
-		}
-	}
-	return true
-}
-
 func calculateCtrlNumber(pnum [11]int32) (int32, int32) {
 	ctrl1 := 11 - ((3*int(pnum[0]) + 7*int(pnum[1]) + 6*int(pnum[2]) + 1*int(pnum[3]) +
 		8*int(pnum[4]) + 9*int(pnum[5]) + 4*int(pnum[6]) + 5*int(pnum[7]) +
@@ -87,7 +78,7 @@ func generateNumbers(pnum [11]int32, depth int, idx int) {
 		}
 	} else {
 		pnum[9], pnum[10] = calculateCtrlNumber(pnum)
-		if pnumIsValid(&pnum) {
+		if pnum[9] != -1 && pnum[10] != -1 {
 			fmt.Println(pnum)
 		}
 	}
@@ -104,16 +95,14 @@ func usage() {
 }
 
 func main() {
-
 	var fodselsnummer [11]int32
-	//fodselsnummer := make([]int32, 11)
 	switch len(os.Args) {
 	case 2:
 		if formatIsValid(os.Args[1]) == true {
 			convertToIntArray(os.Args[1], &fodselsnummer)
 			generateNumbers(fodselsnummer, 0, 6)
 		} else {
-			fmt.Println("Invalid input format")
+			usage()
 		}
 	default:
 		usage()
