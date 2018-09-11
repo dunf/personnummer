@@ -5,18 +5,15 @@ import (
 	"os"
 )
 
-const version string = "0.0.1"
+const version string = "0.1.0"
 
 func convertToIntArray(pnum string, f *[11]int32) {
-	for i, c := range pnum[:9] {
+	for i, c := range pnum[:11] {
 		f[i] = c - 48
 	}
 }
 
 func formatIsValid(pnum string) bool {
-	/* Input must be of length 11, the first six digits cannot be a wildcard
-	and must be a valid date. Individual numbers can be wildcards specified with the
-	character "?". */
 	if len(pnum) != 11 {
 		return false
 	}
@@ -85,13 +82,8 @@ func generateNumbers(pnum [11]int32, depth int, idx int) {
 }
 
 func usage() {
-	fmt.Printf("personummer v%s\n", version)
-	fmt.Println("This program generates valid person numbers for a given date.")
-	fmt.Println("Info about person number: https://no.wikipedia.org/wiki/F%C3%B8dselsnummer \n\n")
-	fmt.Printf("Usage: %s <11 digit number> where digit 7, 8 and/or 9 can be wildcards.", os.Args[0])
-	fmt.Println("Digit 10 and 11 must be wildcards.")
-	fmt.Println("Wildcards are specified using the '?' character")
-	fmt.Printf("Example: %s 010170?5???\n", os.Args[0])
+	fmt.Printf("personummer v%s\nUsage: %s <number>\nUse '?' as wildcards\nExample: %s 010170?5???\n",
+		version, os.Args[0], os.Args[0])
 }
 
 func main() {
@@ -100,7 +92,17 @@ func main() {
 	case 2:
 		if formatIsValid(os.Args[1]) == true {
 			convertToIntArray(os.Args[1], &fodselsnummer)
-			generateNumbers(fodselsnummer, 0, 6)
+			if fodselsnummer[9] != 15 && fodselsnummer[10] != 15 {
+				var c1, c2 int32
+				c1, c2 = calculateCtrlNumber(fodselsnummer)
+				if c1 == fodselsnummer[9] && c2 == fodselsnummer[10] {
+					fmt.Println("Valid")
+				} else {
+					fmt.Println("Invalid")
+				}
+			} else {
+				generateNumbers(fodselsnummer, 0, 6)
+			}
 		} else {
 			usage()
 		}
