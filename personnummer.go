@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 const version string = "0.1.0"
@@ -76,7 +77,8 @@ func generateNumbers(pnum [11]int32, depth int, idx int) {
 	} else {
 		pnum[9], pnum[10] = calculateCtrlNumber(pnum)
 		if pnum[9] != -1 && pnum[10] != -1 {
-			fmt.Println(pnum)
+			p := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(pnum)), ""), "[]")
+			fmt.Println(p)
 		}
 	}
 }
@@ -85,7 +87,6 @@ func usage() {
 	fmt.Printf("personummer v%s\nUsage: %s <number>\nUse '?' as wildcards\nExample: %s 010170?5???\n",
 		version, os.Args[0], os.Args[0])
 }
-
 func main() {
 	var fodselsnummer [11]int32
 	switch len(os.Args) {
